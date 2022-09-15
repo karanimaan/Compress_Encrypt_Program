@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stdio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -117,12 +116,11 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-		//HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
 	  sprintf(buffer, "%d \r\n", 6);
 
 
-		HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
-		for (int i = 0; i < 1234567; i++);
+	HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+	for (int i = 0; i < 1234567; i++);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -179,7 +177,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 38400;
+  huart2.Init.BaudRate = 9600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
