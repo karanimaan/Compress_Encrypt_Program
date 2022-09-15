@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "stdio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -42,6 +43,7 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+char buffer[14];
 
 /* USER CODE END PV */
 
@@ -66,25 +68,6 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
-
-	char buffer[14];
-	sprintf(buffer, "%d \r\n", 5);
-	HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
-
-	/*uint8_t test[] = {3, 6, 9};
-
-	heatshrink_encoder encoder = *heatshrink_encoder_alloc(8, 4);
-    uint8_t* input = test;//START_OF_INPUT_ADRESS;
-    size_t size = 2;
-    size_t* input_size;
-    heatshrink_encoder_sink(&encoder, input, size, input_size);
-
-    uint8_t* out_buf;
-    size_t out_buf_size = 2;
-    size_t* output_size;
-    heatshrink_encoder_poll(&encoder, out_buf, out_buf_size, output_size);
-    printf("%d", *out_buf);*/
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -108,6 +91,25 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+	/*uint8_t test[] = {3, 6, 9};
+
+	heatshrink_encoder encoder = *heatshrink_encoder_alloc(8, 4);
+	uint8_t* input = test;//START_OF_INPUT_ADRESS;
+	size_t size = 2;
+	size_t* input_size;
+	heatshrink_encoder_sink(&encoder, input, size, input_size);
+
+	uint8_t* out_buf;
+	size_t out_buf_size = 2;
+	size_t* output_size;
+	heatshrink_encoder_poll(&encoder, out_buf, out_buf_size, output_size);
+	printf("%d", *out_buf);*/
+
+  uint8_t test[] = {3, 6, 9};
+
+  uint8_t num = 3;
+  uint8_t* ptr = &num;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -115,7 +117,12 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+		//HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
+	  sprintf(buffer, "%d \r\n", 6);
 
+
+		HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+		for (int i = 0; i < 1234567; i++);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -198,9 +205,21 @@ static void MX_USART2_UART_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PC8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 }
 
