@@ -43,7 +43,6 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-char buffer[14];
 
 /* USER CODE END PV */
 
@@ -91,7 +90,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-	uint8_t test[] = {3, 6, 9};
+	/*uint8_t test[] = {3, 6, 9};
 
 	heatshrink_encoder encoder = *heatshrink_encoder_alloc(8, 4);
 	uint8_t* input = test;//START_OF_INPUT_ADRESS;
@@ -106,14 +105,24 @@ int main(void)
 
 
 	uint8_t num = 3;
-	uint8_t* ptr = &num;
+	uint8_t* ptr = &num;*/
 
-	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
 
-	sprintf(buffer, "%d \r\n", *out_buf);
-	HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+  /*uint8_t val = 0;
+  uint8_t* buffer = &val;*/
+  char buffer[4];
+  //*buffer = 0;
 
-	for (int i = 0; i < 1234567; i++);
+	sprintf(buffer, "%d \r\n", 6);
+
+  	/*buffer_val = "hello";
+  	buffer = &buffer_val;*/
+
+  /*uint8_t i = 92;
+  uint8_t* p = &i;*/
+
+	HAL_I2C_Mem_Read(hi2c, DevAddress, MemAddress, MemAddSize, pData, Size, Timeout)
+
 
   /* USER CODE END 2 */
 
@@ -122,7 +131,13 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
 
+	HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+	//HAL_UART_Transmit(&huart2, p, sizeof(p), 1000);
+
+
+	for (int i = 0; i < 1234567; i++);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
