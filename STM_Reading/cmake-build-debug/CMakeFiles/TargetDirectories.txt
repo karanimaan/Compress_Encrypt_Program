@@ -1,0 +1,3 @@
+C:/Users/Karan/OneDrive - University of Cape Town/COURSES/Design/Data_Transfer_Program/cmake-build-debug/CMakeFiles/Data_Transfer_Program.dir
+C:/Users/Karan/OneDrive - University of Cape Town/COURSES/Design/Data_Transfer_Program/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Karan/OneDrive - University of Cape Town/COURSES/Design/Data_Transfer_Program/cmake-build-debug/CMakeFiles/rebuild_cache.dir
