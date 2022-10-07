@@ -82,6 +82,14 @@ static uint8_t* read_multiple_ak09916_reg(uint8_t reg, uint8_t len);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void debugPrintln(UART_HandleTypeDef *uart_handle,char _out[])
+{
+	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
+	HAL_UART_Transmit(uart_handle, (uint8_t *) _out,strlen(_out), 80);
+	char newline[2] = "\r\n";
+	HAL_UART_Transmit(uart_handle, (uint8_t *)newline, 2, 10);
+
+}
 void Compression(unsigned char *sizeOut, const char *Message_size) {/*
 
 	unsigned long long Buffer = 0;
@@ -154,6 +162,9 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  sprintf(buffer,"accel[x],accel[y],accel[z],gyro[x],gyro[y],gyro[z]");
+  debugPrintln(&huart2, buffer);
+
   while (1)
   {
     /* USER CODE END WHILE */
@@ -162,28 +173,10 @@ int main(void)
 	icm20948_accel_read_g(&my_accel);
 	icm20948_gyro_read_dps(&my_gyro);
 
-	sprintf(buffer,"%.4f ", FLT_DECIMAL_DIG-1, my_accel.x);
-	HAL_UART_Transmit(&huart2,buffer, strlen(buffer),1000);
-
-	sprintf(buffer,"%.4f ", FLT_DECIMAL_DIG-1, my_accel.y);
-	HAL_UART_Transmit(&huart2,buffer, strlen(buffer),1000);
-
-	sprintf(buffer,"%.4f | ", FLT_DECIMAL_DIG-1, my_accel.z);
-	HAL_UART_Transmit(&huart2,buffer, strlen(buffer),1000);
+    sprintf(buffer,"%11f %11f %11f %11f %11f %11f",my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
+	debugPrintln(&huart2, buffer);
 
 
-	sprintf(buffer,"%.4f ", FLT_DECIMAL_DIG-1, my_gyro.x);
-	HAL_UART_Transmit(&huart2,buffer, strlen(buffer),1000);
-
-	sprintf(buffer,"%.4f ", FLT_DECIMAL_DIG-1, my_gyro.y);
-	HAL_UART_Transmit(&huart2,buffer, strlen(buffer),1000);
-
-	sprintf(buffer,"%.4f ", FLT_DECIMAL_DIG-1, my_gyro.z);
-	HAL_UART_Transmit(&huart2,buffer, strlen(buffer),1000);
-
-
-	sprintf(buffer,"\n\r");
-	HAL_UART_Transmit(&huart2,buffer, strlen(buffer),1000);
 
 	HAL_Delay(1000);
   }
