@@ -225,11 +225,14 @@ int main(void)
     #define SENSOR_DATA_LENGTH 80
     char sensor_data[SENSOR_DATA_LENGTH];
     sprintf(sensor_data,"%11f %11f %11f %11f %11f %11f",my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
+    char newline[2] = "\r\n";
+    HAL_UART_Transmit(&huart2, (uint8_t *)newline, 2, 10);
 
     #define COMPRESSED_LENGTH 70  // 7/8 size of original
     unsigned char compressed_string[COMPRESSED_LENGTH] = "";   // initialized to remove residual data
     Compression(compressed_string, sensor_data);
-    //HAL_UART_Transmit(&huart2, compressed_string, sizeof(compressed_string), 1000);
+    HAL_UART_Transmit(&huart2, compressed_string, sizeof(compressed_string), 1000);
+    HAL_UART_Transmit(&huart2, (uint8_t *)newline, 2, 10);
 
     // Encrypt compressed_string
     unsigned char encrypted_string[COMPRESSED_LENGTH] = "";
@@ -240,6 +243,7 @@ int main(void)
     }
 
     HAL_UART_Transmit(&huart2, encrypted_string, sizeof(encrypted_string), 1000);
+    HAL_UART_Transmit(&huart2, (uint8_t *)newline, 2, 10);
 	HAL_Delay(1000);
   }
   /* USER CODE END 3 */
