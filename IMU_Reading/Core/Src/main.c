@@ -24,6 +24,8 @@
 #include "icm20948.h"
 #include "stdio.h"
 #include <float.h>
+#include <string.h>
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -33,6 +35,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define MAX_BUF  256
+#define key Ob01100101
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -53,6 +57,8 @@ axises my_gyro;
 axises my_accel;
 axises my_mag;
 
+char buffer[50];
+
 
 /* USER CODE END PV */
 
@@ -62,6 +68,11 @@ static void MX_GPIO_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
+
+unsigned char getBit(unsigned char, int);
+unsigned char setBit(unsigned char, int);
+unsigned char clearBit(unsigned char, int);
+unsigned char encode(unsigned char, unsigned char, int);
 
 /* Static Functions */
 static void     cs_high();
@@ -120,6 +131,40 @@ void Compression(unsigned char *sizeOut, const char *Message_size) {
 		}
 	}
 }
+
+unsigned char encode(unsigned char pt, unsigned char key, int count)
+{
+	unsigned char result;                                                           // declaring our return variable
+	result = pt;                                                                    // setting it equal to our input paramater
+	int i;
+	if ((count%3) == 0){                                                            // if counter mod 3 = 0
+		for(i = 0; i< 8; i+=2){			                                // loop through all other bits starting at 0
+			if(((getBit(pt,i))^(getBit(key,i))) == 0)                       // if the input xor the key bit = 0
+				result = clearBit(result,i);                            // set it to 0
+			else if (((getBit(pt,i))^(getBit(key,i))) == 1)                 // if the input xor the key bit = 1
+				result = setBit(result,i);                              // set it to 1
+		}
+	}
+	else if((count%3) == 1){                                                        // if the counter mod 3 = 1
+		for(i = 1; i< 8; i+=2){			                                // loop through all other bits starting at 1
+			if(((getBit(pt,i))^(getBit(key,i))) == 0)                       // if the input xor the key bit = 0
+				result = clearBit(result,i);                            // set it to 0
+			else if (((getBit(pt,i))^(getBit(key,i))) == 1)                 // if the input xor the key bit = 1
+				result = setBit(result,i);	                        // set it to 1
+		}
+	}
+	else if((count%3) == 2){                                                        // if the counter mod 3 = 2
+		for(i = 0; i< 8; i++){						        // loop through all other bits starting at 1
+			if(((getBit(pt,i))^(getBit(key,i))) == 0)                       // if the input xor the key bit = 0
+				result = clearBit(result,i);                            // set it to 0
+			else if (((getBit(pt,i))^(getBit(key,i))) == 1)                 // if the input xor the key bit = 1
+				result = setBit(result,i);		                // set it to 1
+		}
+	}
+	return result;                                                                  // return our new Encrypted bit
+}
+
+
 /* USER CODE END 0 */
 
 /**
@@ -161,6 +206,11 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+
+  unsigned char input[MAX_BUF], out;
+  int choice,i,x, key, hold ,nums[MAX_BUF];
+
   sprintf(buffer,"accel[x],accel[y],accel[z],gyro[x],gyro[y],gyro[z]");
   debugPrintln(&huart2, buffer);
 
@@ -174,15 +224,23 @@ int main(void)
 
     #define SENSOR_DATA_LENGTH 80
     char sensor_data[SENSOR_DATA_LENGTH];
-    sprintf(buffer,"%11f %11f %11f %11f %11f %11f",my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
+    sprintf(sensor_data,"%11f %11f %11f %11f %11f %11f",my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
 
     #define COMPRESSED_LENGTH 70  // 7/8 size of original
     unsigned char compressed_string[COMPRESSED_LENGTH] = "";   // initialized to remove residual data
-    Compression(compressed_string, original);
-    //HAL_UART_Transmit(&huart2, compressed_string, COMPRESSED_LENGTH, 1000);   to be removed
+    Compression(compressed_string, sensor_data);
+    //HAL_UART_Transmit(&huart2, compressed_string, sizeof(compressed_string), 1000);
+    //debug_Println(&huart2, compressed_string);
 
     // Encrypt compressed_string @Omo
+    unsigned char encrypted_string[COMPRESSED_LENGTH] = "";
+    for(i = 0; i < strlen(compressed_string)-1;i++){                    // loops through each char in input and encrypts it then prints it
+    	        out = encode(compressed_string[i], key, i);
+    	        encrypted_string[i]= out;
+    }
+
     //HAL_UART_Transmit(&huart2, encrypted_string, sizeof(encrypted_string), 1000);
+    //debug_Println(&huart2, encrypted_string);
 
 	HAL_Delay(1000);
   }
@@ -836,6 +894,24 @@ static uint8_t* read_multiple_ak09916_reg(uint8_t reg, uint8_t len)
 
 	HAL_Delay(1);
 	return read_multiple_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00, len);
+}
+
+unsigned char getBit(unsigned char c, int n)
+{
+	c = (c&(1<<n))>>n;
+	return c;
+}
+
+unsigned char setBit(unsigned char c, int n)
+{
+	c = c|(1<<n);
+	return c;
+}
+
+unsigned char clearBit(unsigned char c, int n)
+{
+	c = c & (~(1<<n));
+	return c;
 }
 /* USER CODE END 4 */
 
