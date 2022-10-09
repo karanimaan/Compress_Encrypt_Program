@@ -92,14 +92,15 @@ static uint8_t* read_multiple_ak09916_reg(uint8_t reg, uint8_t len);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void debugPrintln(UART_HandleTypeDef *uart_handle,char _out[])
-{
-	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
+void Send_String(char str[]) {
+    HAL_UART_Transmit(&huart2, str, strlen(str), 1000);
+/*
 	HAL_UART_Transmit(uart_handle, (uint8_t *) _out,strlen(_out), 80);
+*/
 	char newline[2] = "\r\n";
-	HAL_UART_Transmit(uart_handle, (uint8_t *)newline, 2, 10);
-
+	HAL_UART_Transmit(&huart2, newline, 2, 1000);
 }
+
 void Compression(unsigned char *sizeOut, const char *Message_size) {
 
 	unsigned long long Buffer = 0;
@@ -199,37 +200,32 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  icm20948_init();
-  //ak09916_init();
+  //icm20948_init();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-
   unsigned char input[MAX_BUF], out;
   int choice, x, key, hold ,nums[MAX_BUF];
-
-  sprintf(buffer,"accel[x],accel[y],accel[z],gyro[x],gyro[y],gyro[z]");
-  debugPrintln(&huart2, buffer);
 
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	icm20948_accel_read_g(&my_accel);
-	icm20948_gyro_read_dps(&my_gyro);
+
+	/*icm20948_accel_read_g(&my_accel);
+	icm20948_gyro_read_dps(&my_gyro);*/
 
     #define SENSOR_DATA_LENGTH 80
-    char sensor_data[SENSOR_DATA_LENGTH];
-    sprintf(sensor_data,"%11f %11f %11f %11f %11f %11f",my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
+    char sensor_data[SENSOR_DATA_LENGTH] = "0.00671\n";
+    //sprintf(sensor_data,"%11f %11f %11f %11f %11f %11f",my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
 
     #define COMPRESSED_LENGTH 70  // 7/8 size of original
     unsigned char compressed_string[COMPRESSED_LENGTH] = "";   // initialized to remove residual data
     Compression(compressed_string, sensor_data);
-    //HAL_UART_Transmit(&huart2, compressed_string, sizeof(compressed_string), 1000);
 
     // Encrypt compressed_string
     unsigned char encrypted_string[COMPRESSED_LENGTH] = "";
@@ -238,9 +234,9 @@ int main(void)
         out = encode(compressed_string[i], key, i);
         encrypted_string[i]= out;
     }
-
-    HAL_UART_Transmit(&huart2, encrypted_string, sizeof(encrypted_string), 1000);
-	HAL_Delay(1000);
+    Send_String(compressed_string);
+    //Send_String(encrypted_string);
+    HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
