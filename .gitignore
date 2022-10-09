@@ -70,3 +70,4 @@ ctrlp.root
 **/.metadata/
 *.list
 *.launch
+/cmake-build-debug/

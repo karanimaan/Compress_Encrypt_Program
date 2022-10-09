@@ -107,7 +107,7 @@ void Compression(unsigned char *sizeOut, const char *Message_size) {
 			Buffer = 0;
 		}
 	}
-	cbits = Bits;
+	char cbits = Bits;
 	while (cbits > 0) {
 		*sizeOut++ = Buffer;
 		Buffer >>= 8;
