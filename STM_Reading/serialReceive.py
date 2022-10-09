@@ -13,9 +13,9 @@ while (1):
         serialString = serialPort.readline()    # STM -> PC
 
         # Print the contents of the serial data
-        #print(serialString.decode('Ascii'))
+        print(serialString.decode('Ascii'))
 
         # write input from STM to file to be decoded
-        with open("encoded.txt", "w") as f:
+        '''with open("encoded.txt", "w") as f:
             f.write(serialString)
-        os.system("a.exe")
+        os.system("a.exe")'''

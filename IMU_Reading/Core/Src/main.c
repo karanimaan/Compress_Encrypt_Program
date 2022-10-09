@@ -209,7 +209,7 @@ int main(void)
 
 
   unsigned char input[MAX_BUF], out;
-  int choice,i,x, key, hold ,nums[MAX_BUF];
+  int choice, x, key, hold ,nums[MAX_BUF];
 
   sprintf(buffer,"accel[x],accel[y],accel[z],gyro[x],gyro[y],gyro[z]");
   debugPrintln(&huart2, buffer);
@@ -230,18 +230,16 @@ int main(void)
     unsigned char compressed_string[COMPRESSED_LENGTH] = "";   // initialized to remove residual data
     Compression(compressed_string, sensor_data);
     //HAL_UART_Transmit(&huart2, compressed_string, sizeof(compressed_string), 1000);
-    //debug_Println(&huart2, compressed_string);
 
-    // Encrypt compressed_string @Omo
+    // Encrypt compressed_string
     unsigned char encrypted_string[COMPRESSED_LENGTH] = "";
-    for(i = 0; i < strlen(compressed_string)-1;i++){                    // loops through each char in input and encrypts it then prints it
-    	        out = encode(compressed_string[i], key, i);
-    	        encrypted_string[i]= out;
+    // loops through each char in input and encrypts it then prints it
+    for (int i = 0; i < strlen(compressed_string); i++) {
+        out = encode(compressed_string[i], key, i);
+        encrypted_string[i]= out;
     }
 
-    //HAL_UART_Transmit(&huart2, encrypted_string, sizeof(encrypted_string), 1000);
-    //debug_Println(&huart2, encrypted_string);
-
+    HAL_UART_Transmit(&huart2, encrypted_string, sizeof(encrypted_string), 1000);
 	HAL_Delay(1000);
   }
   /* USER CODE END 3 */
