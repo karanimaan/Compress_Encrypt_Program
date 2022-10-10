@@ -219,13 +219,10 @@ int main(void)
 	icm20948_gyro_read_dps(&my_gyro);
 
     #define SENSOR_DATA_LENGTH 80
-    //char sensor_data[SENSOR_DATA_LENGTH] = "0.00671\n";
     char sensor_data[SENSOR_DATA_LENGTH];
-	#define FLOAT_FORMAT %11f
-
-    sprintf(sensor_data,"%.*f %.*f %.*f %.*f %.*f %.*f", 5 // decimal places
-            ,my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
-    //sprintf(sensor_data,"%.5f",my_accel.x);
+    sprintf(sensor_data,"%.5f %.5f %.5f %.5f %.5f %.5f",
+            my_accel.x, my_accel.y, my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
+    //sprintf(sensor_data,"%.5f", my_accel.x);
 
     #define COMPRESSED_LENGTH 70  // 7/8 size of original
     unsigned char compressed_string[COMPRESSED_LENGTH] = "";   // initialized to remove residual data
