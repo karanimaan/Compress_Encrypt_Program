@@ -79,6 +79,6 @@ int main() {
 	}*/
     char decompressed_string[DECOMPRESSED_LENGTH];
     Decompression(decompressed_string, encoded_string, COMPRESSED_LENGTH);
-    printf("%s\n", encoded_string);
+    printf("%s\n", decompressed_string);
     return 0;
 }

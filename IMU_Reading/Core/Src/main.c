@@ -222,7 +222,8 @@ int main(void)
     #define SENSOR_DATA_LENGTH 80
     //char sensor_data[SENSOR_DATA_LENGTH] = "0.00671\n";
     char sensor_data[SENSOR_DATA_LENGTH];
-    sprintf(sensor_data,"%11f %11f %11f %11f %11f %11f",my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
+    //sprintf(sensor_data,"%11f %11f %11f %11f %11f %11f",my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
+    sprintf(sensor_data,"%.5f",my_accel.x);
     //sprintf(sensor_data, "0.00671");
 
     #define COMPRESSED_LENGTH 70  // 7/8 size of original
@@ -237,7 +238,7 @@ int main(void)
         encrypted_string[i]= out;
     }
 
-    Send_String(sensor_data);
+    Send_String(compressed_string);
     HAL_Delay(1000);
   }
   /* USER CODE END 3 */
