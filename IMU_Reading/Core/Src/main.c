@@ -210,8 +210,7 @@ int main(void)
   unsigned char input[MAX_BUF], out;
   int choice, x, key, hold ,nums[MAX_BUF];
 
-  while (1)
-  {
+  while (1) {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -222,9 +221,11 @@ int main(void)
     #define SENSOR_DATA_LENGTH 80
     //char sensor_data[SENSOR_DATA_LENGTH] = "0.00671\n";
     char sensor_data[SENSOR_DATA_LENGTH];
-    //sprintf(sensor_data,"%11f %11f %11f %11f %11f %11f",my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
-    sprintf(sensor_data,"%.5f",my_accel.x);
-    //sprintf(sensor_data, "0.00671");
+	#define FLOAT_FORMAT %11f
+
+    sprintf(sensor_data,"%.*f %.*f %.*f %.*f %.*f %.*f", 5 // decimal places
+            ,my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
+    //sprintf(sensor_data,"%.5f",my_accel.x);
 
     #define COMPRESSED_LENGTH 70  // 7/8 size of original
     unsigned char compressed_string[COMPRESSED_LENGTH] = "";   // initialized to remove residual data
