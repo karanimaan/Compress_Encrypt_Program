@@ -5,7 +5,7 @@ serialPort = serial.Serial(port="COM9", baudrate=9600, bytesize=8, timeout=2, st
 
 os.system("gcc .\main.c")
 
-while 1:
+while True:
     # Wait until there is data waiting in the serial buffer
     if serialPort.in_waiting > 0:
         # Read data out of the buffer until a carriage return / new line is found

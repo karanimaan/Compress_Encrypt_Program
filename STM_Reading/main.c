@@ -24,7 +24,7 @@ void Decompression (char *Out_size, const unsigned char *Compressed_size, unsign
 	}
 }
 
-unsigned char encode(unsigned char pt, unsigned char key, int count)
+/*unsigned char encode(unsigned char pt, unsigned char key, int count)
 {
 	unsigned char result;                                                           // declaring our return variable
 	result = pt;                                                                    // setting it equal to our input paramater
@@ -54,7 +54,7 @@ unsigned char encode(unsigned char pt, unsigned char key, int count)
 		}
 	}
 	return result;                                                                  // return our new Encrypted bit
-}
+}*/
 
 /*
 #define TEXTFILE_PATH "C:\Users\Karan\OneDrive - University of Cape Town\COURSES\Design\Data_Transfer_Program\STM_Reading\encoded.txt"
@@ -69,16 +69,16 @@ int main() {
     //printf("%s %llu\n", encoded_string, strlen(encoded_string));
 
     unsigned char compressed_string[COMPRESSED_LENGTH] = "";    // decrypted string
-    // decryption @Omo
-    char out;
+    // decryption
+/*    char out;
         for(int i = 0; i < sizeof(encoded_string); i++){                      // loops through the stored ints and decrypts them back to chars and prints them
             if (encoded_string[i] == -1)
                         break;
 	        out = encode(encoded_string[i], key, i);
 	        compressed_string[i]=out;
-	}
+	}*/
     char decompressed_string[DECOMPRESSED_LENGTH];
     Decompression(decompressed_string, encoded_string, COMPRESSED_LENGTH);
-    printf("%s", decompressed_string);
+    printf("%s\n", encoded_string);
     return 0;
 }

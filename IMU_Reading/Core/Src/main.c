@@ -200,7 +200,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  //icm20948_init();
+  icm20948_init();
 
   /* USER CODE END 2 */
 
@@ -216,12 +216,14 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	/*icm20948_accel_read_g(&my_accel);
-	icm20948_gyro_read_dps(&my_gyro);*/
+	icm20948_accel_read_g(&my_accel);
+	icm20948_gyro_read_dps(&my_gyro);
 
     #define SENSOR_DATA_LENGTH 80
-    char sensor_data[SENSOR_DATA_LENGTH] = "0.00671\n";
-    //sprintf(sensor_data,"%11f %11f %11f %11f %11f %11f",my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
+    //char sensor_data[SENSOR_DATA_LENGTH] = "0.00671\n";
+    char sensor_data[SENSOR_DATA_LENGTH];
+    sprintf(sensor_data,"%11f %11f %11f %11f %11f %11f",my_accel.x,my_accel.y,my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
+    //sprintf(sensor_data, "0.00671");
 
     #define COMPRESSED_LENGTH 70  // 7/8 size of original
     unsigned char compressed_string[COMPRESSED_LENGTH] = "";   // initialized to remove residual data
@@ -234,8 +236,8 @@ int main(void)
         out = encode(compressed_string[i], key, i);
         encrypted_string[i]= out;
     }
-    Send_String(compressed_string);
-    //Send_String(encrypted_string);
+
+    Send_String(sensor_data);
     HAL_Delay(1000);
   }
   /* USER CODE END 3 */
