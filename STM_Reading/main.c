@@ -1,7 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 
-unsigned char  key=0b01100101;
+unsigned char getBit(unsigned char, int);
+unsigned char setBit(unsigned char, int);
+unsigned char clearBit(unsigned char, int);
+unsigned char encode(unsigned char, unsigned char, int);
+void foo ( char *line, int *nums);
+
+unsigned char  key=237;
+int nums[256];
 
 void Decompression (char *Out_size, const unsigned char *Compressed_size, unsigned CompressedLength) {
 
@@ -63,22 +70,49 @@ unsigned char encode(unsigned char pt, unsigned char key, int count)
 #define DECOMPRESSED_LENGTH 80
 
 int main() {
-    FILE *f = fopen("C:\\Users\\Karan\\OneDrive - University of Cape Town\\COURSES\\Design\\Data_Transfer_Program\\STM_Reading\\encoded.txt", "r");
-    unsigned char encoded_string[COMPRESSED_LENGTH] = "";    // compressed and encrypted string
+    FILE *f = fopen("C:\\Users\\Ohmz\\OneDrive - University of Cape Town\\Documents\\Academics\\Third Year\\EEE3097S\\Git Repository\\Data_Transfer_Program\\STM_Reading\\encoded.txt", "r");
+    //unsigned char encoded_string[COMPRESSED_LENGTH] = "13 205 129 41 199 205 18 199 159 41 204 -1";    // compressed and encrypted string
     fgets(encoded_string, COMPRESSED_LENGTH, f);
-    //printf("%s %llu\n", encoded_string, strlen(encoded_string));
+    printf("%s %llu\n", encoded_string, strlen(encoded_string));
 
     unsigned char compressed_string[COMPRESSED_LENGTH] = "";    // decrypted string
     // decryption @Omo
+    foo(encoded_string,&nums);
     char out;
-        for(int i = 0; i < sizeof(encoded_string); i++){                      // loops through the stored ints and decrypts them back to chars and prints them
-            if (encoded_string[i] == -1)
+        for(int i = 0; i < sizeof(nums); i++){                      // loops through the stored ints and decrypts them back to chars and prints them
+            if (nums[i] == -1)
                         break;
-	        out = encode(encoded_string[i], key, i);
+	        out = encode(nums[i], key, i);
 	        compressed_string[i]=out;
 	}
     char decompressed_string[DECOMPRESSED_LENGTH];
-    Decompression(decompressed_string, encoded_string, COMPRESSED_LENGTH);
+    Decompression(decompressed_string, compressed_string, COMPRESSED_LENGTH);
+    printf("%s", compressed_string);
     printf("%s", decompressed_string);
     return 0;
+}
+unsigned char getBit(unsigned char c, int n)
+{
+	c = (c&(1<<n))>>n;
+	return c;
+}
+
+unsigned char setBit(unsigned char c, int n)
+{
+	c = c|(1<<n);
+	return c;
+}
+
+unsigned char clearBit(unsigned char c, int n)
+{
+	c = c & (~(1<<n));
+	return c;
+}
+void foo ( char *line, int *nums) {
+    int num, i = 0, len;
+    while ( sscanf( line, "%d%n", &num, &len) == 1 ) {
+        nums[i]= num;
+        line += len;    // step past the number we found
+        i++;            // increment our count of the number of values found
+    }
 }
