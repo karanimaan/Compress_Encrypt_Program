@@ -52,15 +52,17 @@ while len(original_list[0]) < 10:    # We want 10 recordings of each field
 
         decompressed_list[i].append(float(decompressed_str))
 
+        # ATPs
+        print()
+        print('Compare contents of original data and decompressed data:')
+        print(f'original_str = {original_str}')
+        print(f'decompressed_str = {decompressed_str}')
+        print(f'Decompressed string is identical to original :)' if decompressed_str == original_str else '')
         print()
         print('Compare size of original data and compressed data:')
         print(f'length of original = {len(original_str)}')
         print(f'length of compressed string = {len(compressed_str)}')
         print(f'Compressed string is smaller than original :)' if len(compressed_str) < len(original_str) else '')
-        print()
-
-        print('Compare contents of original data and decompressed data:')
-        print(f'Decompressed string is identical to original :)' if decompressed_str == original_str else '')
         print()
 
         i += 1
