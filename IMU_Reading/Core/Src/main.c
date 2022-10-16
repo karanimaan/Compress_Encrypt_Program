@@ -94,9 +94,6 @@ static uint8_t* read_multiple_ak09916_reg(uint8_t reg, uint8_t len);
 /* USER CODE BEGIN 0 */
 void Send_String(char str[]) {
     HAL_UART_Transmit(&huart2, str, strlen(str), 1000);
-/*
-	HAL_UART_Transmit(uart_handle, (uint8_t *) _out,strlen(_out), 80);
-*/
 	char newline[2] = "\r\n";
 	HAL_UART_Transmit(&huart2, newline, 2, 1000);
 }
@@ -224,7 +221,7 @@ int main(void)
             my_accel.x, my_accel.y, my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
     //sprintf(sensor_data,"%.5f", my_accel.x);
 
-    #define COMPRESSED_LENGTH 70  // 7/8 size of original
+    #define COMPRESSED_LENGTH 80  // 7/8 size of original
     unsigned char compressed_string[COMPRESSED_LENGTH] = "";   // initialized to remove residual data
     Compression(compressed_string, sensor_data);
 
@@ -236,8 +233,9 @@ int main(void)
         encrypted_string[i]= out;
     }
 
+    //Send_String(sensor_data);
     Send_String(compressed_string);
-    HAL_Delay(1000);
+    HAL_Delay(1000*2);
   }
   /* USER CODE END 3 */
 }

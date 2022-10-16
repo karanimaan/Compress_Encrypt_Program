@@ -66,28 +66,21 @@ unsigned char encode(unsigned char pt, unsigned char key, int count)
 /*
 #define TEXTFILE_PATH "C:\Users\Karan\OneDrive - University of Cape Town\COURSES\Design\Data_Transfer_Program\STM_Reading\encoded.txt"
 */
-#define COMPRESSED_LENGTH 70  // 7/8 size of original
+#define COMPRESSED_LENGTH 80  // 7/8 size of original
 #define DECOMPRESSED_LENGTH 80
+#define FILENAME "C:\\Users\\Karan\\OneDrive - University of Cape Town\\COURSES\\Design\\Data_Transfer_Program\\STM_Reading\\compressed.txt"
 
 int main() {
-    FILE *f = fopen("C:\\Users\\Karan\\OneDrive - University of Cape Town\\COURSES\\Design\\Data_Transfer_Program\\STM_Reading\\encoded.txt", "r");
-    unsigned char encoded_string[COMPRESSED_LENGTH] = "";    // compressed and encrypted string
-    fgets(encoded_string, COMPRESSED_LENGTH, f);
-    //printf("%s %llu\n", encoded_string, strlen(encoded_string));
+    FILE *f = fopen(FILENAME, "r");
+    unsigned char compressed_string[COMPRESSED_LENGTH] = "";    // compressed and encrypted string
+    fgets(compressed_string, COMPRESSED_LENGTH, f);
+    //printf("%s %llu\n", compressed_string, strlen(compressed_string));
 
-    unsigned char compressed_string[COMPRESSED_LENGTH] = "";    // decrypted string
-    // decryption
-    foo(encoded_string,&nums);
-    char out;
-        for(int i = 0; i < sizeof(nums); i++){                      // loops through the stored ints and decrypts them back to chars and prints them
-            if (nums[i] == -1)
-                        break;
-	        out = encode(nums[i], key, i);
-	        compressed_string[i]=out;
-	}
     char decompressed_string[DECOMPRESSED_LENGTH];
     Decompression(decompressed_string, compressed_string, COMPRESSED_LENGTH);
     printf("%s\n", decompressed_string);
+
+
     return 0;
 }
 unsigned char getBit(unsigned char c, int n)
