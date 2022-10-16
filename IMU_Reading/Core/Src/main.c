@@ -35,8 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define MAX_BUF  256
-#define key Ob01100101
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -69,10 +68,7 @@ static void MX_SPI1_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
-unsigned char getBit(unsigned char, int);
-unsigned char setBit(unsigned char, int);
-unsigned char clearBit(unsigned char, int);
-unsigned char encode(unsigned char, unsigned char, int);
+
 
 /* Static Functions */
 static void     cs_high();
@@ -133,37 +129,7 @@ void Compression(unsigned char *sizeOut, const char *Message_size) {
 	}
 }
 
-unsigned char encode(unsigned char pt, unsigned char key, int count)
-{
-	unsigned char result;                                                           // declaring our return variable
-	result = pt;                                                                    // setting it equal to our input paramater
-	int i;
-	if ((count%3) == 0){                                                            // if counter mod 3 = 0
-		for(i = 0; i< 8; i+=2){			                                // loop through all other bits starting at 0
-			if(((getBit(pt,i))^(getBit(key,i))) == 0)                       // if the input xor the key bit = 0
-				result = clearBit(result,i);                            // set it to 0
-			else if (((getBit(pt,i))^(getBit(key,i))) == 1)                 // if the input xor the key bit = 1
-				result = setBit(result,i);                              // set it to 1
-		}
-	}
-	else if((count%3) == 1){                                                        // if the counter mod 3 = 1
-		for(i = 1; i< 8; i+=2){			                                // loop through all other bits starting at 1
-			if(((getBit(pt,i))^(getBit(key,i))) == 0)                       // if the input xor the key bit = 0
-				result = clearBit(result,i);                            // set it to 0
-			else if (((getBit(pt,i))^(getBit(key,i))) == 1)                 // if the input xor the key bit = 1
-				result = setBit(result,i);	                        // set it to 1
-		}
-	}
-	else if((count%3) == 2){                                                        // if the counter mod 3 = 2
-		for(i = 0; i< 8; i++){						        // loop through all other bits starting at 1
-			if(((getBit(pt,i))^(getBit(key,i))) == 0)                       // if the input xor the key bit = 0
-				result = clearBit(result,i);                            // set it to 0
-			else if (((getBit(pt,i))^(getBit(key,i))) == 1)                 // if the input xor the key bit = 1
-				result = setBit(result,i);		                // set it to 1
-		}
-	}
-	return result;                                                                  // return our new Encrypted bit
-}
+
 
 
 /* USER CODE END 0 */
@@ -207,8 +173,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  unsigned char input[MAX_BUF], out;
-  int choice, x, key, hold ,nums[MAX_BUF];
+
 
   while (1) {
     /* USER CODE END WHILE */
@@ -228,13 +193,6 @@ int main(void)
     unsigned char compressed_string[COMPRESSED_LENGTH] = "";   // initialized to remove residual data
     Compression(compressed_string, sensor_data);
 
-    // Encrypt compressed_string
-    unsigned char encrypted_string[COMPRESSED_LENGTH] = "";
-    // loops through each char in input and encrypts it then prints it
-    for (int i = 0; i < strlen(compressed_string); i++) {
-        out = encode(compressed_string[i], key, i);
-        encrypted_string[i]= out;
-    }
 
     Send_String(compressed_string);
     HAL_Delay(1000);
@@ -891,23 +849,7 @@ static uint8_t* read_multiple_ak09916_reg(uint8_t reg, uint8_t len)
 	return read_multiple_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00, len);
 }
 
-unsigned char getBit(unsigned char c, int n)
-{
-	c = (c&(1<<n))>>n;
-	return c;
-}
 
-unsigned char setBit(unsigned char c, int n)
-{
-	c = c|(1<<n);
-	return c;
-}
-
-unsigned char clearBit(unsigned char c, int n)
-{
-	c = c & (~(1<<n));
-	return c;
-}
 /* USER CODE END 4 */
 
 /**
