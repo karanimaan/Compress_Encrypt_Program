@@ -52,6 +52,17 @@ while len(original_list[0]) < 10:    # We want 10 recordings of each field
 
         decompressed_list[i].append(float(decompressed_str))
 
+        print()
+        print('Compare size of original data and compressed data:')
+        print(f'length of original = {len(original_str)}')
+        print(f'length of compressed string = {len(compressed_str)}')
+        print(f'Compressed string is smaller than original :)' if len(compressed_str) < len(original_str) else '')
+        print()
+
+        print('Compare contents of original data and decompressed data:')
+        print(f'Decompressed string is identical to original :)' if decompressed_str == original_str else '')
+        print()
+
         i += 1
         if i == 6:
             print(headings)
@@ -60,20 +71,10 @@ while len(original_list[0]) < 10:    # We want 10 recordings of each field
             print([v[-1] for v in original_list])
             print([v[-1] for v in decompressed_list])
 
-            print('Compare size of original data and compressed data:')
-            print(f'length of original = {len(original_str)}')
-            print(f'length of compressed string = {len(compressed_str)}')
-            print(f'Compressed string is smaller than original :)' if len(compressed_str) < len(original_str) else '')
-            print()
-
-            print('Compare contents of original data and decompressed data:')
-            print(f'Decompressed string is identical to original :)' if decompressed_str == original_str else '')
-            print()
-
 for i in range(6):  # for data in [accel_x, accel_y, accel_z, gyro_x, gyro_y, gyro_z]
 
     # fft original data
-    original_freq = np.abs(np.fft.fft(original_list[i]))
+    original_freq = np.abs(np.fft.fft(original_list[i]))    # list of Fourier coefficients
     print(f'original_freq = {original_freq}')
 
     # fft decompressed data
