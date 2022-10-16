@@ -1,14 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-unsigned char getBit(unsigned char, int);
-unsigned char setBit(unsigned char, int);
-unsigned char clearBit(unsigned char, int);
-unsigned char encode(unsigned char, unsigned char, int);
-void foo ( char *line, int *nums);
 
-unsigned char  key=237;
-int nums[256];
 
 void Decompression (char *Out_size, const unsigned char *Compressed_size, unsigned CompressedLength) {
 
@@ -31,37 +24,7 @@ void Decompression (char *Out_size, const unsigned char *Compressed_size, unsign
 	}
 }
 
-unsigned char encode(unsigned char pt, unsigned char key, int count)
-{
-	unsigned char result;                                                           // declaring our return variable
-	result = pt;                                                                    // setting it equal to our input paramater
-	int i;
-	if ((count%3) == 0){                                                            // if counter mod 3 = 0
-		for(i = 0; i< 8; i+=2){			                                // loop through all other bits starting at 0
-			if(((getBit(pt,i))^(getBit(key,i))) == 0)                       // if the input xor the key bit = 0
-				result = clearBit(result,i);                            // set it to 0
-			else if (((getBit(pt,i))^(getBit(key,i))) == 1)                 // if the input xor the key bit = 1
-				result = setBit(result,i);                              // set it to 1
-		}
-	}
-	else if((count%3) == 1){                                                        // if the counter mod 3 = 1
-		for(i = 1; i< 8; i+=2){			                                // loop through all other bits starting at 1
-			if(((getBit(pt,i))^(getBit(key,i))) == 0)                       // if the input xor the key bit = 0
-				result = clearBit(result,i);                            // set it to 0
-			else if (((getBit(pt,i))^(getBit(key,i))) == 1)                 // if the input xor the key bit = 1
-				result = setBit(result,i);	                        // set it to 1
-		}
-	}
-	else if((count%3) == 2){                                                        // if the counter mod 3 = 2
-		for(i = 0; i< 8; i++){						        // loop through all other bits starting at 1
-			if(((getBit(pt,i))^(getBit(key,i))) == 0)                       // if the input xor the key bit = 0
-				result = clearBit(result,i);                            // set it to 0
-			else if (((getBit(pt,i))^(getBit(key,i))) == 1)                 // if the input xor the key bit = 1
-				result = setBit(result,i);		                // set it to 1
-		}
-	}
-	return result;                                                                  // return our new Encrypted bit
-}
+
 
 /*
 #define TEXTFILE_PATH "C:\Users\Karan\OneDrive - University of Cape Town\COURSES\Design\Data_Transfer_Program\STM_Reading\encoded.txt"
@@ -71,47 +34,14 @@ unsigned char encode(unsigned char pt, unsigned char key, int count)
 
 int main() {
     FILE *f = fopen("C:\\Users\\Karan\\OneDrive - University of Cape Town\\COURSES\\Design\\Data_Transfer_Program\\STM_Reading\\encoded.txt", "r");
-    unsigned char encoded_string[COMPRESSED_LENGTH] = "";    // compressed and encrypted string
-    fgets(encoded_string, COMPRESSED_LENGTH, f);
+    unsigned char compressed_string[COMPRESSED_LENGTH] = "";    // compressed and encrypted string
+    fgets(compressed_string, COMPRESSED_LENGTH, f);
     //printf("%s %llu\n", encoded_string, strlen(encoded_string));
 
-    unsigned char compressed_string[COMPRESSED_LENGTH] = "";    // decrypted string
-    // decryption
-    foo(encoded_string,&nums);
-    char out;
-        for(int i = 0; i < sizeof(nums); i++){                      // loops through the stored ints and decrypts them back to chars and prints them
-            if (nums[i] == -1)
-                        break;
-	        out = encode(nums[i], key, i);
-	        compressed_string[i]=out;
-	}
+    
     char decompressed_string[DECOMPRESSED_LENGTH];
     Decompression(decompressed_string, compressed_string, COMPRESSED_LENGTH);
     printf("%s\n", decompressed_string);
     return 0;
 }
-unsigned char getBit(unsigned char c, int n)
-{
-	c = (c&(1<<n))>>n;
-	return c;
-}
 
-unsigned char setBit(unsigned char c, int n)
-{
-	c = c|(1<<n);
-	return c;
-}
-
-unsigned char clearBit(unsigned char c, int n)
-{
-	c = c & (~(1<<n));
-	return c;
-}
-void foo ( char *line, int *nums) {
-    int num, i = 0, len;
-    while ( sscanf( line, "%d%n", &num, &len) == 1 ) {
-        nums[i]= num;
-        line += len;    // step past the number we found
-        i++;            // increment our count of the number of values found
-    }
-}
