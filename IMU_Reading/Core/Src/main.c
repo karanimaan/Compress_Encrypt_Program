@@ -56,9 +56,13 @@ static float accel_scale_factor;
 axises my_gyro;
 axises my_accel;
 axises my_mag;
-
 char buffer[50];
 
+#define SENSOR_DATA_LENGTH 10
+char sensor_data[SENSOR_DATA_LENGTH];
+
+#define COMPRESSED_LENGTH 9  // 7/8 size of original
+unsigned char compressed_string[COMPRESSED_LENGTH] = "";   // initialized to remove residual data
 
 /* USER CODE END PV */
 
@@ -162,6 +166,13 @@ unsigned char encode(unsigned char pt, unsigned char key, int count)
 	return result;                                                                  // return our new Encrypted bit
 }
 
+void compress_and_send(float sensor_float) {
+    sprintf(sensor_data,"%.5f", sensor_float);
+    Compression(compressed_string, sensor_data);
+
+    Send_String(sensor_data);
+    Send_String(compressed_string);
+}
 
 /* USER CODE END 0 */
 
@@ -169,75 +180,65 @@ unsigned char encode(unsigned char pt, unsigned char key, int count)
   * @brief  The application entry point.
   * @retval int
   */
-int main(void)
-{
-  /* USER CODE BEGIN 1 */
+int main(void) {
 
-  /* USER CODE END 1 */
+    /* USER CODE BEGIN 1 */
 
-  /* MCU Configuration--------------------------------------------------------*/
+    /* USER CODE END 1 */
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+    /* MCU Configuration--------------------------------------------------------*/
 
-  /* USER CODE BEGIN Init */
+    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+    HAL_Init();
 
-  /* USER CODE END Init */
+    /* USER CODE BEGIN Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+    /* USER CODE END Init */
 
-  /* USER CODE BEGIN SysInit */
+    /* Configure the system clock */
+    SystemClock_Config();
 
-  /* USER CODE END SysInit */
+    /* USER CODE BEGIN SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_SPI1_Init();
-  MX_USART2_UART_Init();
-  /* USER CODE BEGIN 2 */
+    /* USER CODE END SysInit */
 
-  icm20948_init();
+    /* Initialize all configured peripherals */
+    MX_GPIO_Init();
+    MX_SPI1_Init();
+    MX_USART2_UART_Init();
+    /* USER CODE BEGIN 2 */
 
-  /* USER CODE END 2 */
+    icm20948_init();
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+    /* USER CODE END 2 */
 
-  unsigned char input[MAX_BUF], out;
-  int choice, x, key, hold ,nums[MAX_BUF];
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
 
-  while (1) {
+    unsigned char input[MAX_BUF], out;
+    int choice, x, key, hold ,nums[MAX_BUF];
+
+    while (1) {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
-	icm20948_accel_read_g(&my_accel);
-	icm20948_gyro_read_dps(&my_gyro);
+    icm20948_accel_read_g(&my_accel);
+    icm20948_gyro_read_dps(&my_gyro);
 
-    #define SENSOR_DATA_LENGTH 80
-    char sensor_data[SENSOR_DATA_LENGTH];
-    sprintf(sensor_data,"%.5f %.5f %.5f %.5f %.5f %.5f",
-            my_accel.x, my_accel.y, my_accel.z, my_gyro.x, my_gyro.y, my_gyro.z);
-    //sprintf(sensor_data,"%.5f", my_accel.x);
+    compress_and_send(my_accel.x);
+    compress_and_send(my_accel.y);
+    compress_and_send(my_accel.z);
 
-    #define COMPRESSED_LENGTH 80  // 7/8 size of original
-    unsigned char compressed_string[COMPRESSED_LENGTH] = "";   // initialized to remove residual data
-    Compression(compressed_string, sensor_data);
+    compress_and_send(my_gyro.x);
+    compress_and_send(my_gyro.y);
+    compress_and_send(my_gyro.z);
 
-    // Encrypt compressed_string
-    unsigned char encrypted_string[COMPRESSED_LENGTH] = "";
-    // loops through each char in input and encrypts it then prints it
-    for (int i = 0; i < strlen(compressed_string); i++) {
-        out = encode(compressed_string[i], key, i);
-        encrypted_string[i]= out;
-    }
+    Send_String(NULL);
 
-    //Send_String(sensor_data);
-    Send_String(compressed_string);
     HAL_Delay(1000*2);
-  }
-  /* USER CODE END 3 */
+    }
+    /* USER CODE END 3 */
 }
 
 /**
